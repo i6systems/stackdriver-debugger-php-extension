@@ -1,10 +1,10 @@
 --TEST--
-Stackdriver Debugger: Allowing a whitelisted function and a whitelisted method from ini_set
+Stackdriver Debugger: Not allowing a allowed function regex if regex are not enabled
+--INI--
+stackdriver_debugger.function_allowed="/oo/"
+stackdriver_debugger.method_allowed="/ar/"
 --FILE--
 <?php
-
-ini_set('stackdriver_debugger.functions_allowed', 'foo');
-ini_set('stackdriver_debugger.method_whitelist', 'bar');
 
 $statements = [
     'foo($bar)',
@@ -14,8 +14,8 @@ $statements = [
     '$bar->foo()',
     '$foo->asdf($bar)',
 ];
-var_dump(ini_get('stackdriver_debugger.functions_allowed'));
-var_dump(ini_get('stackdriver_debugger.method_whitelist'));
+var_dump(ini_get('stackdriver_debugger.function_allowed'));
+var_dump(ini_get('stackdriver_debugger.method_allowed'));
 
 foreach ($statements as $statement) {
     $valid = @stackdriver_debugger_valid_statement($statement) ? 'true' : 'false';
@@ -24,11 +24,11 @@ foreach ($statements as $statement) {
 
 ?>
 --EXPECT--
-string(3) "foo"
-string(3) "bar"
-statement: 'foo($bar)' valid: true
+string(4) "/oo/"
+string(4) "/ar/"
+statement: 'foo($bar)' valid: false
 statement: 'bar($foo)' valid: false
 statement: 'asdf()' valid: false
-statement: '$foo->bar()' valid: true
+statement: '$foo->bar()' valid: false
 statement: '$bar->foo()' valid: false
 statement: '$foo->asdf($bar)' valid: false
