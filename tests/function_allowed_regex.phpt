@@ -1,8 +1,8 @@
 --TEST--
 Stackdriver Debugger: Allowing a allowed function regex
 --INI--
-stackdriver_debugger.function_allowed="/oo/"
-stackdriver_debugger.method_allowed="/ar/"
+stackdriver_debugger.functions_allowed="/oo/"
+stackdriver_debugger.methods_allowed="/ar/"
 stackdriver_debugger.allow_regex=1
 --FILE--
 <?php
@@ -15,8 +15,8 @@ $statements = [
     '$bar->foo()',
     '$foo->asdf($bar)',
 ];
-var_dump(ini_get('stackdriver_debugger.function_allowed'));
-var_dump(ini_get('stackdriver_debugger.method_allowed'));
+var_dump(ini_get('stackdriver_debugger.functions_allowed'));
+var_dump(ini_get('stackdriver_debugger.methods_allowed'));
 var_dump(ini_get('stackdriver_debugger.allow_regex'));
 
 foreach ($statements as $statement) {

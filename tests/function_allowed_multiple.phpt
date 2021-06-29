@@ -1,8 +1,8 @@
 --TEST--
-Stackdriver Debugger: Allowing multiple whitelisted functions and methods
+Stackdriver Debugger: Allowing multiple allowed functions and methods
 --INI--
 stackdriver_debugger.functions_allowed="foo,bar"
-stackdriver_debugger.method_whitelist="one,two"
+stackdriver_debugger.methods_allowed="one,two"
 --FILE--
 <?php
 
@@ -18,7 +18,7 @@ $statements = [
     '$obj->two($one)',
 ];
 var_dump(ini_get('stackdriver_debugger.functions_allowed'));
-var_dump(ini_get('stackdriver_debugger.method_whitelist'));
+var_dump(ini_get('stackdriver_debugger.methods_allowed'));
 
 foreach ($statements as $statement) {
     $valid = @stackdriver_debugger_valid_statement($statement) ? 'true' : 'false';

@@ -400,7 +400,7 @@ static int compile_ast(zend_string *source, zend_ast **ast_p, zend_lex_state *or
     return SUCCESS;
 }
 
-static int valid_user_whitelisted_function_or_method(HashTable *function_list, zend_string *function_name)
+static int valid_user_allowed_function_or_method(HashTable *function_list, zend_string *function_name)
 {
     if (STACKDRIVER_DEBUGGER_G(allow_regex)) {
         zend_string *function_in_list;
@@ -450,7 +450,7 @@ static int valid_debugger_call(zend_string *function_name)
     }
 
     if (STACKDRIVER_DEBUGGER_G(user_allowed_functions)) {
-        return valid_user_whitelisted_function_or_method(
+        return valid_user_allowed_function_or_method(
             STACKDRIVER_DEBUGGER_G(user_allowed_functions),
             function_name
         );
@@ -460,13 +460,13 @@ static int valid_debugger_call(zend_string *function_name)
 }
 
 /**
- * Determine if the allowed method call is whitelisted.
+ * Determine if the allowed method call is allowed.
  */
 static int valid_debugger_method_call(zend_string *method_name)
 {
-    if (STACKDRIVER_DEBUGGER_G(user_whitelisted_methods)) {
-        return valid_user_whitelisted_function_or_method(
-            STACKDRIVER_DEBUGGER_G(user_whitelisted_methods),
+    if (STACKDRIVER_DEBUGGER_G(user_allowed_methods)) {
+        return valid_user_allowed_function_or_method(
+            STACKDRIVER_DEBUGGER_G(user_allowed_methods),
             method_name
         );
     }
@@ -669,16 +669,16 @@ static void register_user_allowed_functions(zend_string *ini_setting)
     register_user_allowed_str(
         ZSTR_VAL(ini_setting),
         ZSTR_LEN(ini_setting),
-        STACKDRIVER_DEBUGGER_G(user_whitelisted_functions)
+        STACKDRIVER_DEBUGGER_G(user_allowed_functions)
     );
 }
 
-static void register_user_whitelisted_methods(zend_string *ini_setting)
+static void register_user_allowed_methods(zend_string *ini_setting)
 {
-    register_user_whitelisted_str(
+    register_user_allowed_str(
         ZSTR_VAL(ini_setting),
         ZSTR_LEN(ini_setting),
-        STACKDRIVER_DEBUGGER_G(user_whitelisted_methods)
+        STACKDRIVER_DEBUGGER_G(user_allowed_methods)
     );
 }
 
@@ -948,19 +948,19 @@ int stackdriver_debugger_ast_rinit(TSRMLS_D)
         register_user_allowed_str(
             ini,
             strlen(ini),
-            STACKDRIVER_DEBUGGER_G(user_whitelisted_functions)
+            STACKDRIVER_DEBUGGER_G(user_allowed_functions)
         );
     }
 
-    ALLOC_HASHTABLE(STACKDRIVER_DEBUGGER_G(user_whitelisted_methods));
-    zend_hash_init(STACKDRIVER_DEBUGGER_G(user_whitelisted_methods), 8, NULL, ZVAL_PTR_DTOR, 1);
+    ALLOC_HASHTABLE(STACKDRIVER_DEBUGGER_G(user_allowed_methods));
+    zend_hash_init(STACKDRIVER_DEBUGGER_G(user_allowed_methods), 8, NULL, ZVAL_PTR_DTOR, 1);
 
-    ini = INI_STR(PHP_STACKDRIVER_DEBUGGER_INI_WHITELISTED_METHODS);
+    ini = INI_STR(PHP_STACKDRIVER_DEBUGGER_INI_ALLOWED_METHODS);
     if (ini) {
-        register_user_whitelisted_str(
+        register_user_allowed_str(
                 ini,
                 strlen(ini),
-                STACKDRIVER_DEBUGGER_G(user_whitelisted_methods)
+                STACKDRIVER_DEBUGGER_G(user_allowed_methods)
         );
     }
 
@@ -979,8 +979,8 @@ int stackdriver_debugger_ast_rshutdown(TSRMLS_D)
 {
     zend_hash_destroy(STACKDRIVER_DEBUGGER_G(user_allowed_functions));
     FREE_HASHTABLE(STACKDRIVER_DEBUGGER_G(user_allowed_functions));
-    zend_hash_destroy(STACKDRIVER_DEBUGGER_G(user_whitelisted_methods));
-    FREE_HASHTABLE(STACKDRIVER_DEBUGGER_G(user_whitelisted_methods));
+    zend_hash_destroy(STACKDRIVER_DEBUGGER_G(user_allowed_methods));
+    FREE_HASHTABLE(STACKDRIVER_DEBUGGER_G(user_allowed_methods));
     zend_hash_destroy(STACKDRIVER_DEBUGGER_G(ast_to_clean));
     FREE_HASHTABLE(STACKDRIVER_DEBUGGER_G(ast_to_clean));
 
@@ -1051,25 +1051,25 @@ PHP_INI_MH(OnUpdate_stackdriver_debugger_allowed_functions)
         register_user_allowed_str(
             ZSTR_VAL(new_value),
             ZSTR_LEN(new_value),
-            STACKDRIVER_DEBUGGER_G(user_whitelisted_functions)
+            STACKDRIVER_DEBUGGER_G(user_allowed_functions)
         );
     }
     return SUCCESS;
 }
 
 /**
- * Callback for when the user changes the method function whitelist php.ini setting.
+ * Callback for when the user changes the method function allowed php.ini setting.
  */
-PHP_INI_MH(OnUpdate_stackdriver_debugger_whitelisted_methods)
+PHP_INI_MH(OnUpdate_stackdriver_debugger_allowed_methods)
 {
     /* Only use this mechanism for ini_set (runtime stage) */
     if (new_value != NULL && stage & ZEND_INI_STAGE_RUNTIME) {
-        zend_hash_destroy(STACKDRIVER_DEBUGGER_G(user_whitelisted_methods));
-        zend_hash_init(STACKDRIVER_DEBUGGER_G(user_whitelisted_methods), 8, NULL, ZVAL_PTR_DTOR, 1);
-        register_user_whitelisted_str(
+        zend_hash_destroy(STACKDRIVER_DEBUGGER_G(user_allowed_methods));
+        zend_hash_init(STACKDRIVER_DEBUGGER_G(user_allowed_methods), 8, NULL, ZVAL_PTR_DTOR, 1);
+        register_user_allowed_str(
                 ZSTR_VAL(new_value),
                 ZSTR_LEN(new_value),
-                STACKDRIVER_DEBUGGER_G(user_whitelisted_methods)
+                STACKDRIVER_DEBUGGER_G(user_allowed_methods)
         );
     }
     return SUCCESS;

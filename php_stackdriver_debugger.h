@@ -27,7 +27,7 @@
 #define PHP_STACKDRIVER_DEBUGGER_VERSION "0.3.0"
 #define PHP_STACKDRIVER_DEBUGGER_EXTNAME "stackdriver_debugger"
 #define PHP_STACKDRIVER_DEBUGGER_INI_ALLOWED_FUNCTIONS "stackdriver_debugger.functions_allowed"
-#define PHP_STACKDRIVER_DEBUGGER_INI_WHITELISTED_METHODS "stackdriver_debugger.method_whitelist"
+#define PHP_STACKDRIVER_DEBUGGER_INI_ALLOWED_METHODS "stackdriver_debugger.methods_allowed"
 #define PHP_STACKDRIVER_DEBUGGER_INI_MAX_TIME "stackdriver_debugger.max_time"
 #define PHP_STACKDRIVER_DEBUGGER_INI_MAX_TIME_PERCENTAGE "stackdriver_debugger.max_time_percentage"
 #define PHP_STACKDRIVER_DEBUGGER_INI_MAX_MEMORY "stackdriver_debugger.max_memory"
@@ -48,7 +48,7 @@ ZEND_BEGIN_MODULE_GLOBALS(stackdriver_debugger)
     HashTable *user_allowed_functions;
 
     /* map of method name -> empty null zval */
-    HashTable *user_whitelisted_methods;
+    HashTable *user_allowed_methods;
 
     /* map of filename -> stackdriver_debugger_snapshot[] */
     HashTable *snapshots_by_file;

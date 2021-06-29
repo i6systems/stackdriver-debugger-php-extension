@@ -3,8 +3,8 @@ Stackdriver Debugger: Allowing a allowed function regex from ini_set
 --FILE--
 <?php
 
-ini_set('stackdriver_debugger.function_allowed', '/oo/');
-ini_set('stackdriver_debugger.method_allowed', '/ar/');
+ini_set('stackdriver_debugger.functions_allowed', '/oo/');
+ini_set('stackdriver_debugger.methods_allowed', '/ar/');
 ini_set('stackdriver_debugger.allow_regex', 1);
 
 $statements = [
@@ -15,8 +15,8 @@ $statements = [
     '$bar->foo()',
     '$foo->asdf($bar)',
 ];
-var_dump(ini_get('stackdriver_debugger.function_allowed'));
-var_dump(ini_get('stackdriver_debugger.method_allowed'));
+var_dump(ini_get('stackdriver_debugger.functions_allowed'));
+var_dump(ini_get('stackdriver_debugger.methods_allowed'));
 var_dump(ini_get('stackdriver_debugger.allow_regex'));
 
 foreach ($statements as $statement) {

@@ -1,8 +1,8 @@
 --TEST--
-Stackdriver Debugger: Allowing a whitelisted function and a whitelisted method
+Stackdriver Debugger: Allowing a allowed function and a allowed method
 --INI--
 stackdriver_debugger.functions_allowed="foo"
-stackdriver_debugger.method_whitelist="bar"
+stackdriver_debugger.methods_allowed="bar"
 --FILE--
 <?php
 
@@ -15,7 +15,7 @@ $statements = [
     '$foo->asdf($bar)',
 ];
 var_dump(ini_get('stackdriver_debugger.functions_allowed'));
-var_dump(ini_get('stackdriver_debugger.method_whitelist'));
+var_dump(ini_get('stackdriver_debugger.methods_allowed'));
 
 foreach ($statements as $statement) {
     $valid = @stackdriver_debugger_valid_statement($statement) ? 'true' : 'false';

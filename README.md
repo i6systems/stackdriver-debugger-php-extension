@@ -206,27 +206,27 @@ namespace if applicable.
 
 This setting applies to global functions, not to methods of classes.
 
-### Whitelisting Method Calls in Conditions and Evaluated Expressions
+### Allowing Method Calls in Conditions and Evaluated Expressions
 
 By default no method calls are allowed on any class or object
 
 You can add a list of method calls that will be allowed on any class or object by setting the ini config
-`stackdriver_debugger.method_whitelist`:
+`stackdriver_debugger.methods_allowed`:
 
 ```
 # in php.ini
-stackdriver_debugger.method_whitelist="getId,isDeleted"
+stackdriver_debugger.methods_allowed="getId,isDeleted"
 ```
 
 ```php
-ini_set('stackdriver_debugger.method_whitelist', 'getId,isDeleted');
+ini_set('stackdriver_debugger.methods_allowed', 'getId,isDeleted');
 ```
 
-Note that this list is applied to any class or object, so make sure that the methods in this list do not produce any side effects for any class. This setting does not apply to static methods which should be specified in the global function whitelist with their full namespace.
+Note that this list is applied to any class or object, so make sure that the methods in this list do not produce any side effects for any class. This setting does not apply to static methods which should be specified in the global function allow with their full namespace.
 
-### Using regular expressions in whitelisted function and method names
+### Using regular expressions in allowed function and method names
 
-You can allow the use of regular expressions in the list of functions or methods listed in the `stackdriver_debugger.function_whitelist` and ``stackdriver_debugger.method_whitelist` ini setting by setting
+You can allow the use of regular expressions in the list of functions or methods listed in the `stackdriver_debugger.functions_allowed` and `stackdriver_debugger.methods_allowed` ini setting by setting
 `stackdriver_debugger.allow_regex` to `1`:
 
 ```
@@ -238,7 +238,7 @@ stackdriver_debugger.allow_regex=1
 ini_set('stackdriver_debugger.allow_regex', '1');
 ```
 
-This will allow you for example to add this expression to the list of whitelisted functions `"/^DateTime::/"` and this should allow you to run any of the `DateTime` static functions
+This will allow you for example to add this expression to the list of allowed functions `"/^DateTime::/"` and this should allow you to run any of the `DateTime` static functions
 
 ## Design
 

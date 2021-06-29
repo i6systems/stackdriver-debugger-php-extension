@@ -1,8 +1,8 @@
 --TEST--
-Stackdriver Debugger: Allowing a namespaced whitelisted function. Namespaced methods should not be allowed
+Stackdriver Debugger: Allowing a namespaced allowed function. Namespaced methods should not be allowed
 --INI--
 stackdriver_debugger.functions_allowed="foo,Foo\Bar::asdf"
-stackdriver_debugger.method_whitelist="one,One\Two::hjkl"
+stackdriver_debugger.methods_allowed="one,One\Two::hjkl"
 --FILE--
 <?php
 
@@ -29,7 +29,7 @@ $statements = [
     '$obj->Foo\Bar::asdf()',
 ];
 var_dump(ini_get('stackdriver_debugger.functions_allowed'));
-var_dump(ini_get('stackdriver_debugger.method_whitelist'));
+var_dump(ini_get('stackdriver_debugger.methods_allowed'));
 
 foreach ($statements as $statement) {
     $valid = @stackdriver_debugger_valid_statement($statement) ? 'true' : 'false';
